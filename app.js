@@ -111,7 +111,7 @@ bot.on('text', async (message) => {
 	if (message.text) {
 		if (message.text.startsWith('/start') || message.text == '🔙 Назад') {
 			let user = await User.findOne({ id: message.from.id });
-			console.log(user);
+			// console.log(user);
 			if (!user) {
 				let schema = {
 					id: message.from.id,
@@ -135,22 +135,22 @@ bot.on('text', async (message) => {
 					not: false,
 					data: "",
 					bank: 0,
-				}
+				};
 
 				let reffer = Number(message.text.split('/start')[1]);
-
+				// console.log(typeof(reffer));
 				if (reffer) {
 					let $reffer = await User.findOne({ id: reffer }); //1
-					let $reffer2 = await User.findOne({ id: reffer });//2
+					// console.log($reffer);
+					let $reffer2 = await User.findOne({ id: $reffer.ref });//2
+					console.log($reffer);
 
-					let $reff = await User.findOne({ id: $reffer2.ref });
-					let $reffer3 = await User.findOne({ id: $reff.id });
 
 					await $reffer.inc('outbalance', settings.ref1st);
 					await $reffer.inc('refCount', 1);
-					await $reff.inc('outbalance', settings.refdad);
+					await $reffer2.inc('outbalance', settings.refdad);
 					bot.sendMessage($reffer.id, `🔔 Вы пригласили <a href="tg://user?id=${message.from.id}">реферала</a> 1 уровня и получили ${settings.ref1st}₽`, { parse_mode: "HTML" });
-					bot.sendMessage($reff.id, `🔔 Вам начисленно ${settings.refdad}₽, так как ваш реферал привел своего реферала`, { parse_mode: "HTML" });
+					bot.sendMessage($reffer2.id, `🔔 Вам начисленно ${settings.refdad}₽, так как ваш реферал привел своего реферала`, { parse_mode: "HTML" });
 
 
 
@@ -378,7 +378,7 @@ bot.on('text', async (message) => {
 📊<b> Статистика проекта:</b>\n
 👨‍💻 Пользователей в проекте: ${stats.users}
 👨‍💻 Пользователей сегодня: ${stats.users_today}
-🕐 Старт бота произведен 23.10.2021
+🕐 Старт бота произведен 30.10.2021
 `, {
 				parse_mode: "HTML",
 				reply_markup: {
@@ -856,4 +856,8 @@ async function ticker() {
 		await User.updateMany({}, { game_limit: 10, spinsToday: 0 })
 }
 
-setInterval(ticker, 1000 * 60)
+setInterval(ticker, 1000 * 60);
+// User.insertMany([
+// 	{ "_id" : "5dfaac928d3ea75ef63263ba", "id" : 0, "outbalance": 0,  "wb_profits" : 0, "name" : "Ezafy corp ©", "fc" : 0, "ref" : 0., "regDate" : "18/12/2019", "deposit" : 0, "payout" : 0, "fetuses" : 0, "menu" : "{\"price\":20,\"status\":false,\"count\":5,\"bought\":3}", "lastCollect" : 1576709266975, "ban" : false, "refCount" : 0, "ref2Count" : 0, "ref3Count" : 0, "ref4Count" : 0, "ref5Count" : 0, "ref6Count" : 0, "ref7Count" : 0, "ref8Count" : 0, "ref9Count" : 0, "ref10Count" : 0, "not" : false, "__v" : 0, "totalEarn" : 0, "prudLevel" : 0 },
+// 	{ "_id" : "5dfbe31493b06e7818e2c5d7", "id" : 1, "menu" : "{\"price\":20,\"status\":true,\"count\":5,\"bought\":3}", "__v" : 0, "totalEarn" : 0, "prudLevel" : 0 }
+// ]).then()
